@@ -1,44 +1,24 @@
 /*
-  Blink
-  Turns on an LED on for one second, then off for one second, repeatedly.
+  AP Wifi (Access Point Wifi)
+  Turns on LED remotely over wifi
 
-  modified 8 May 2014
-  by Scott Fitzgerald
+  modified Oct 2016
+  by Nancy Ouyang
 */
 
 #include <ESP8266WiFi.h>
-
-#define right_cw HIGH 
-#define right_ccw LOW
-#define left_cw LOW 
-#define left_ccw HIGH 
-
-#define motor_pwm_left D1
-#define motor_pwm_right D2
-
-#define motor_dir_left D3
-#define motor_dir_right D4
-
-int speed_left = 1000;
-int speed_right = 1000;
 
 //////////////////////
 // WiFi Definitions //
 //////////////////////
 const char WiFiAPPSK[] = "sparkfun";
+WiFiServer server(80);
   
 /////////////////////
 // Pin Definitions //
 /////////////////////
-const int LED_PIN = D0; // Thing's onboard, green LED
-const int ANALOG_PIN = A0; // The only analog pin on the Thing
-const int DIGITAL_PIN = 12; // Digital pin to be read
-
-//const int MOTOR_PWM_LEFT = D1;
-//const int MOTOR_DIR_LEFT = D3; 
-
-
-WiFiServer server(80);
+#define LED_PIN D0
+#define LED_PIN_2 D4
 
 void setup() 
 {
@@ -46,10 +26,8 @@ void setup()
   setupWiFi();
   server.begin();
 
-  pinMode(motor_dir_left, OUTPUT);
-  pinMode(motor_dir_right, OUTPUT);
-  pinMode(motor_pwm_left, OUTPUT);
-  pinMode(motor_pwm_right, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(LED_PIN_2, OUTPUT);
 }
 
 void loop() 
@@ -69,38 +47,15 @@ void loop()
   int val = -1; // We'll use 'val' to keep track of both the
                 // request type (read/set) and value if set.
 
-  int mval = -1;
-
 
   if (req.indexOf("/l/0") != -1)
     val = 0; // Will write LED low
 
   else if (req.indexOf("/l/1") != -1)
     val = 1; // Will write LED high
-
-  // set motor direction (forward or backward)
-  else if (req.indexOf("/m/0") != -1) {
-    digitalWrite(motor_dir_left, left_cw);
-    mval = 999;
-  }
-    
-  else if (req.indexOf("/m/1") != -1) {
-    digitalWrite(motor_dir_left, left_ccw);
-    mval = 0;
-  }
-
-  else if (req.indexOf("/r") != -1)
-    val = -2; // Will print pin reads
-  // Otherwise request will be invalid. We'll say as much in HTML
-
   // Set GPIO5 according to the request
   else if (val >= 0)
     digitalWrite(LED_PIN, val);
-
-  // set motor speed
-  else if (mval >= 0)
-    analogWrite(motor_pwm_left, speed_left);
-    //digitalWrite(MOTOR_LEFT_PIN, val);
 
   client.flush();
 
@@ -110,47 +65,26 @@ void loop()
   s += "<!DOCTYPE HTML>\r\n<html>\r\n";
   // If we're setting the LED, print out a message saying we did
 
-  String ms = "";
-
   if (val >= 0)
   {
     s += "LED is now ";
     s += (val)?"on":"off";
   }
 
-  // motor functions
-  else if (mval = 0)
-  {
-    ms += "left motor is now turning backward (ccw)";
-  }
-  else if (mval > 0)
-  {
-    ms += "left motor is now turning forward (cw)";
-  }
-
-
-  else if (val == -2)
-  { // If we're reading pins, print out those values:
-    s += "Analog Pin = ";
-    s += String(analogRead(ANALOG_PIN));
-    s += "<br>"; // Go to the next line.
-    s += "Digital Pin 12 = ";
-    s += String(digitalRead(DIGITAL_PIN));
-  }
+  // motor function
   else
   {
-    s += "Invalid Request.<br> Try /l/1, /l/0, /m/1, /m/0, or /r.";
+    s += "Invalid Request.<br> Try /l/1, /l/0";
   }
   s += "</html>\n";
 
   // Send the response to the client
   client.print(s);
-  client.print(ms);
   delay(1);
-  Serial.println("Client disonnected");
+  Serial.println("Client disconnected");
 
   // The client will actually be disconnected 
-  // when the function returns and 'client' object is detroyed
+  // when the function returns and 'client' object is destroyed
 }
 
 void setupWiFi()
@@ -178,7 +112,6 @@ void setupWiFi()
 void initHardware()
 {
   Serial.begin(115200);
-  pinMode(DIGITAL_PIN, INPUT_PULLUP);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
   // Don't need to set ANALOG_PIN as input, 

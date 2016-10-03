@@ -12,6 +12,7 @@
 #define LED_PIN D0
 #define LED_PIN_2 D4
 #define ANALOG_PIN A0
+
 int sensorValue = 999;
  
 void setup() {
