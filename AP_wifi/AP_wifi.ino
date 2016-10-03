@@ -4,7 +4,8 @@
 
   modified 8 May 2014
   by Scott Fitzgerald
- */
+*/
+
 #include <ESP8266WiFi.h>
 
 #define right_cw HIGH 
@@ -33,8 +34,8 @@ const int LED_PIN = D0; // Thing's onboard, green LED
 const int ANALOG_PIN = A0; // The only analog pin on the Thing
 const int DIGITAL_PIN = 12; // Digital pin to be read
 
-//const int MOTOR_PWM_LEFT = D1; // Thing's onboard, green LED
-//const int MOTOR_DIR_LEFT = D3; // Thing's onboard, green LED
+//const int MOTOR_PWM_LEFT = D1;
+//const int MOTOR_DIR_LEFT = D3; 
 
 
 WiFiServer server(80);

@@ -1,9 +1,9 @@
 /*
-  Blink
-  Turns on an LED on for one second, then off for one second, repeatedly.
+  Motor Hello World 
+  Drives motors both in clockwise direction, then in ccw, so that robot drives in circles
 
-  modified 8 May 2014
-  by Scott Fitzgerald
+  modified Oct 2016
+  by Nancy Ouyang
  */
 
 #define motor_dir_left D3
