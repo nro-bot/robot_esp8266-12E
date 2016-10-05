@@ -65,12 +65,20 @@ void setup(void){
     server.send(200, "text/plain", "this works as well");
   });
 
-  server.on("/led", [](){
-    String state = server.arg("state");
-    analogWrite(led, state.toInt());
-    server.send(200, "text/plain", "Motor is now " + state);
+  server.on("/999", [](){
+    server.send(200, "text/plain", "hello motor 0");
+    analogWrite(led, 0);
   });
 
+  server.on("/800", [](){
+    server.send(200, "text/plain", "hello motor 800");
+    analogWrite(led, 800);
+  });
+
+  server.on("/1023", [](){
+    server.send(200, "text/plain", "hello motor 1023");
+    analogWrite(led, 1023);
+  });
 
   server.onNotFound(handleNotFound);
 
