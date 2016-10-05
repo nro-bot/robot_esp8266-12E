@@ -6,6 +6,8 @@
 const char* ssid = "***REMOVED***";
 const char* password = "***REMOVED***";
 
+const int speed = 0;
+
 ESP8266WebServer server(80);
 
 const int led = D1;
@@ -61,6 +63,21 @@ void setup(void){
 
   server.on("/inline", [](){
     server.send(200, "text/plain", "this works as well");
+  });
+
+  server.on("/999", [](){
+    server.send(200, "text/plain", "hello motor 0");
+    analogWrite(led, 0);
+  });
+
+  server.on("/800", [](){
+    server.send(200, "text/plain", "hello motor 800");
+    analogWrite(led, 800);
+  });
+
+  server.on("/1023", [](){
+    server.send(200, "text/plain", "hello motor 1023");
+    analogWrite(led, 1023);
   });
 
   server.onNotFound(handleNotFound);
