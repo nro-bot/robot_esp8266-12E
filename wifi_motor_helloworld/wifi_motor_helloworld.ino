@@ -1,33 +1,24 @@
-/*
-  AP Wifi (Access Point Wifi)
-  Turns on LED remotely over wifi
-
-  modified Oct 2016
-  by Nancy Ouyang
-*/
-
 #include <ESP8266WiFi.h>
 
 //////////////////////
 // WiFi Definitions //
 //////////////////////
 const char WiFiAPPSK[] = "sparkfun";
-WiFiServer server(80);
-  
+
 /////////////////////
 // Pin Definitions //
 /////////////////////
-#define LED_PIN D0
-#define LED_PIN_2 D4
+const int LED_PIN = 5; // Thing's onboard, green LED
+const int ANALOG_PIN = A0; // The only analog pin on the Thing
+const int DIGITAL_PIN = 12; // Digital pin to be read
+
+WiFiServer server(80);
 
 void setup() 
 {
   initHardware();
   setupWiFi();
   server.begin();
-
-  pinMode(LED_PIN, OUTPUT);
-  pinMode(LED_PIN_2, OUTPUT);
 }
 
 void loop() 
@@ -46,15 +37,16 @@ void loop()
   // Match the request
   int val = -1; // We'll use 'val' to keep track of both the
                 // request type (read/set) and value if set.
-
-
-  if (req.indexOf("/l/0") != -1)
+  if (req.indexOf("/led/0") != -1)
     val = 0; // Will write LED low
-
-  else if (req.indexOf("/l/1") != -1)
+  else if (req.indexOf("/led/1") != -1)
     val = 1; // Will write LED high
+  else if (req.indexOf("/read") != -1)
+    val = -2; // Will print pin reads
+  // Otherwise request will be invalid. We'll say as much in HTML
+
   // Set GPIO5 according to the request
-  else if (val >= 0)
+  if (val >= 0)
     digitalWrite(LED_PIN, val);
 
   client.flush();
@@ -64,27 +56,32 @@ void loop()
   s += "Content-Type: text/html\r\n\r\n";
   s += "<!DOCTYPE HTML>\r\n<html>\r\n";
   // If we're setting the LED, print out a message saying we did
-
   if (val >= 0)
   {
     s += "LED is now ";
     s += (val)?"on":"off";
   }
-
-  // motor function
+  //else if (val == -2)
+  //{ // If we're reading pins, print out those values:
+    //s += "Analog Pin = ";
+    //s += String(analogRead(ANALOG_PIN));
+    //s += "<br>"; // Go to the next line.
+    //s += "Digital Pin 12 = ";
+    //s += String(digitalRead(DIGITAL_PIN));
+  //}
   else
   {
-    s += "Invalid Request.<br> Try /l/1, /l/0";
+    s += "Invalid Request.<br> Try /led/1, /led/0, or /read.";
   }
   s += "</html>\n";
 
   // Send the response to the client
   client.print(s);
   delay(1);
-  Serial.println("Client disconnected");
+  Serial.println("Client disonnected");
 
   // The client will actually be disconnected 
-  // when the function returns and 'client' object is destroyed
+  // when the function returns and 'client' object is detroyed
 }
 
 void setupWiFi()
@@ -98,7 +95,7 @@ void setupWiFi()
   String macID = String(mac[WL_MAC_ADDR_LENGTH - 2], HEX) +
                  String(mac[WL_MAC_ADDR_LENGTH - 1], HEX);
   macID.toUpperCase();
-  String AP_NameString = "TEST ESP826 " + macID;
+  String AP_NameString = "ESP8266 Thing " + macID;
 
   char AP_NameChar[AP_NameString.length() + 1];
   memset(AP_NameChar, 0, AP_NameString.length() + 1);
@@ -112,6 +109,7 @@ void setupWiFi()
 void initHardware()
 {
   Serial.begin(115200);
+  pinMode(DIGITAL_PIN, INPUT_PULLUP);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
   // Don't need to set ANALOG_PIN as input, 
