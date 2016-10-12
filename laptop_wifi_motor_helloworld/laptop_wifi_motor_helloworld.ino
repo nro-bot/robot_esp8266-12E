@@ -3,6 +3,7 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
+// !! Hardcoded Wireless Setup
 const char* ssid = "***REMOVED***";
 const char* password = "***REMOVED***";
 
@@ -10,16 +11,88 @@ const int speed = 0;
 
 ESP8266WebServer server(80);
 
-const int led = D1;
+const int LED_PIN = D0;
+
+const int MOTOR_PWM_LEFT = D1;
+const int MOTOR_PWM_RIGHT = D2;
+
+const int MOTOR_DIR_LEFT = D3;
+const int MOTOR_DIR_RIGHT = D4;
+
+#define MOTOR_CW LOW
+#define MOTOR_CCW HIGH
+
+void setup(void){
+  // Setup motor and LED pins
+  pinMode(MOTOR_PWM_LEFT, OUTPUT);
+  pinMode(MOTOR_PWM_RIGHT, OUTPUT);
+  pinMode(MOTOR_DIR_LEFT, OUTPUT);
+  pinMode(MOTOR_DIR_RIGHT, OUTPUT);
+
+  pinMode(LED_PIN, OUTPUT);
+
+  // Set initial speed to 0
+  analogWrite(MOTOR_PWM_LEFT, 0);
+  analogWrite(MOTOR_PWM_RIGHT, 0);
+
+  Serial.begin(115200);
+  Serial.println("");
+
+  // Set up WIFI
+  WiFi.begin(ssid, password);
+
+  // Wait for connection
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  if (MDNS.begin("esp8266")) {
+    Serial.println("MDNS responder started");
+  }
+
+  //
+  // Handle URLs
+  //
+
+  server.on("/", handleRoot);
+
+  server.on("/inline", [](){
+    server.send(200, "text/plain", "this works as well");
+  });
+
+  server.on("/motor", [](){
+    String state = server.arg("state");
+    analogWrite(MOTOR_PWM_LEFT, state.toInt());
+    analogWrite(MOTOR_PWM_RIGHT, state.toInt());
+    server.send(200, "text/plain", "Motor is now " + state);
+  });
+
+  server.onNotFound(handleNotFound);
+
+  server.begin();
+  Serial.println("HTTP server started");
+}
+
+
+
+void loop(void){
+  server.handleClient();
+}
+
+
 
 void handleRoot() {
-  digitalWrite(led, 1);
   server.send(200, "text/plain", "hello from esp8266!");
-  digitalWrite(led, 0);
 }
 
 void handleNotFound(){
-  digitalWrite(led, 1);
   String message = "File Not Found\n\n";
   message += "URI: ";
   message += server.uri();
@@ -33,51 +106,4 @@ void handleNotFound(){
   }
   server.send(404, "text/plain", message);
   delay(1000);
-  digitalWrite(led, 0);
-}
-
-void setup(void){
-  pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
-
-  Serial.begin(115200);
-  WiFi.begin(ssid, password);
-  Serial.println("");
-
-  // Wait for connection
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.print("Connected to ");
-  Serial.println(ssid);
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-
-  if (MDNS.begin("esp8266")) {
-    Serial.println("MDNS responder started");
-  }
-
-  server.on("/", handleRoot);
-
-  server.on("/inline", [](){
-    server.send(200, "text/plain", "this works as well");
-  });
-
-  server.on("/led", [](){
-    String state = server.arg("state");
-    analogWrite(led, state.toInt());
-    server.send(200, "text/plain", "Motor is now " + state);
-  });
-
-
-  server.onNotFound(handleNotFound);
-
-  server.begin();
-  Serial.println("HTTP server started");
-}
-
-void loop(void){
-  server.handleClient();
 }
