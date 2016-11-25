@@ -3,8 +3,8 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
-const char* ssid = "***REMOVED***";
-const char* password = "***REMOVED***";
+const char* ssid = "DG1670AF2";
+const char* password = "DG1670A6ACDF2";
 
 const int speed = 0;
 
