@@ -24,3 +24,11 @@ Then can program directly in Arduino over USB cable :)
 
 * https://github.com/tzapu/WiFiManager
 
+Beginning Work
+
+* Does LED_blink work?
+Both LEDs should blink, but alternating. Serial monitor should display low (<10) values.
+
+* Does motor_helloworld work?
+Both motors should move, specifically they should accelerate, switch directions, and repeat. Serial monitor should display commanded speed.
+
