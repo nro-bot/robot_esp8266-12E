@@ -1,12 +1,20 @@
 /*
   Wireless Motor -- Stationary Wireless Mode
 
-  Turn an LED on and off wirelessly.
+  Set speed of both motors wirelessly.
 
-  Note that one of the motor pins overlaps with LED pin D4, so when the left wheel is going CW, the LED light close the ESP chip will turn on
-  Note that we opted to swap the motor wires on the right motor so that LOW is backwards for both motors
-  We arbitrarily define left motor CW = backwards
-  
+  Usage:
+    Go to the IP address which shows up in the serial monitor, e.g.
+        IP address: 192.168.0.10
+    and you should see "hello from esp8266!"
+
+    Set speed with: 192.168.0.10/motor?speed=800
+
+  Notes: 
+  * One of the motor pins overlaps with LED pin D4, so when the left wheel is going CW, the LED light close the ESP chip will turn on
+  * We opted to swap the motor wires on the right motor so that LOW is backwards for both motors
+  * We arbitrarily define left motor CW = backwards
+
   Hardware: 
   * NodeMCU Amica DevKit Board (ESP8266 chip)
   * Motorshield for NodeMCU 
@@ -46,8 +54,8 @@ const int MOTOR_DIR_RIGHT = D4;
 void setup(void){
   // Setup motor and LED pins
   pinMode(MOTOR_PWM_LEFT, OUTPUT);
-  pinMode(MOTOR_PWM_RIGHT, OUTPUT);
   pinMode(MOTOR_DIR_LEFT, OUTPUT);
+  pinMode(MOTOR_PWM_RIGHT, OUTPUT);
   pinMode(MOTOR_DIR_RIGHT, OUTPUT);
 
   pinMode(LED_PIN, OUTPUT);
@@ -57,7 +65,7 @@ void setup(void){
   analogWrite(MOTOR_PWM_RIGHT, 0);
 
   Serial.begin(115200);
-  Serial.println("");
+  Serial.println("Hello~");
 
   // Set up WIFI
   WiFi.begin(ssid, password);
@@ -89,10 +97,15 @@ void setup(void){
   });
 
   server.on("/motor", [](){
-    String state = server.arg("state");
-    analogWrite(MOTOR_PWM_LEFT, state.toInt());
-    analogWrite(MOTOR_PWM_RIGHT, state.toInt());
-    server.send(200, "text/plain", "Motor is now " + state);
+    String speed = server.arg("speed");
+    
+    digitalWrite(MOTOR_DIR_LEFT, MOTOR_FWD);
+    digitalWrite(MOTOR_DIR_LEFT, MOTOR_BACK);
+
+    analogWrite(MOTOR_PWM_LEFT, speed.toInt());
+    analogWrite(MOTOR_PWM_RIGHT, speed.toInt());
+    
+    server.send(200, "text/plain", "Motor is now " + speed);
   });
 
   server.onNotFound(handleNotFound);

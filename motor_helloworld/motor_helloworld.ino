@@ -22,19 +22,17 @@
 
 #define led_pin D0
 
+#define motor_pwm_left D1
+#define motor_pwm_right D2
+
 #define motor_dir_left D3
 #define motor_dir_right D4
 
 #define dir_back LOW
 #define dir_fwd HIGH 
 
-#define motor_pwm_left D1
-#define motor_pwm_right D2
-
 int i = 0;
 
-int speed_left = 800;
-int speed_right = 1000;
 
 void setup() {
   pinMode(motor_dir_left, OUTPUT);
@@ -45,6 +43,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("BEGIN");
 }
+
 
 void loop() {
   Serial.println("~~~~~~~~~~~~~~Backwards~~~~~~~~~~~~~~~~~~");
@@ -57,7 +56,7 @@ void loop() {
     analogWrite(motor_pwm_right, i);  
   
     Serial.println(i);
-    
+
     delay(10);
   }
  
