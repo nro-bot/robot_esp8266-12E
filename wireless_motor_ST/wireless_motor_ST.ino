@@ -1,11 +1,31 @@
+/*
+  Wireless Motor -- Stationary Wireless Mode
+
+  Turn an LED on and off wirelessly.
+
+  Note that one of the motor pins overlaps with LED pin D4, so when the left wheel is going CW, the LED light close the ESP chip will turn on
+  Note that we opted to swap the motor wires on the right motor so that LOW is backwards for both motors
+  We arbitrarily define left motor CW = backwards
+  
+  Hardware: 
+  * NodeMCU Amica DevKit Board (ESP8266 chip)
+  * Motorshield for NodeMCU 
+  * 2 motors + 2 wheels + motor chassis with caster
+  * Left motor connected to D3 (BLK/A- and RED/A+ on the shield)
+  * Right motor connected to D4, with wires swapped (RED/B- and BLK/B+ on the shield)w
+
+  modified Nov 2016
+  by Nancy Ouyang
+*/
+
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
 // !! Hardcoded Wireless Setup
-const char* ssid = "DG1670AF2";
-const char* password = "DG1670A6ACDF2";
+const char* ssid = ".....";
+const char* password = ".....";
 
 const int speed = 0;
 
@@ -19,8 +39,9 @@ const int MOTOR_PWM_RIGHT = D2;
 const int MOTOR_DIR_LEFT = D3;
 const int MOTOR_DIR_RIGHT = D4;
 
-#define MOTOR_CW LOW
-#define MOTOR_CCW HIGH
+#define MOTOR_BACK LOW
+#define MOTOR_FWD HIGH
+
 
 void setup(void){
   // Setup motor and LED pins
@@ -81,7 +102,6 @@ void setup(void){
 }
 
 
-
 void loop(void){
   server.handleClient();
 }
@@ -91,6 +111,7 @@ void loop(void){
 void handleRoot() {
   server.send(200, "text/plain", "hello from esp8266!");
 }
+
 
 void handleNotFound(){
   String message = "File Not Found\n\n";
