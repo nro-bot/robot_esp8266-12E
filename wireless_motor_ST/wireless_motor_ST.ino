@@ -1,9 +1,16 @@
 /*
-  Wireless Motor -- Stationary Wireless Mode
+  Wireless Motor -- Station Wireless Mode
 
   Set speed of both motors wirelessly.
 
+  Station mode means we can remain connected to the internet on our normal wifi connection
+  and interact with the ESP at the same time (vs AP mode, where we connect to the ESP only).
+
   Usage:
+    Put in the code below the SSID and password for your existing wifi connection that we will connect the ESP to.
+    Compile and upload.
+
+    On a laptop connected to the same wireless network, open up a browser.
     Go to the IP address which shows up in the serial monitor, e.g.
         IP address: 192.168.0.10
     and you should see "hello from esp8266!"
@@ -32,8 +39,8 @@
 #include <ESP8266mDNS.h>
 
 // !! Hardcoded Wireless Setup
-const char* ssid = ".....";
-const char* password = ".....";
+const char* ssid = "......";
+const char* password = "......";
 
 const int speed = 0;
 

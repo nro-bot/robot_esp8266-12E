@@ -118,6 +118,7 @@ void setupWiFi()
   //Otherwise, in Station Mode, ESP acts as a device and connects to existing access point
   WiFi.mode(WIFI_AP);
 
+  // SSID
   // Do a little work to get a unique-ish name. Append the
   // last two bytes of the MAC (HEX'd) to "Thing-":
   uint8_t mac[WL_MAC_ADDR_LENGTH];
