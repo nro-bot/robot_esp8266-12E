@@ -9,7 +9,6 @@
   
   We define arbitrarily Left CW = backwards
   
-  
   Hardware: 
   * NodeMCU Amica DevKit Board (ESP8266 chip)
   * Motorshield for NodeMCU 
