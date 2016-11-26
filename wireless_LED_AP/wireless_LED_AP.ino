@@ -3,7 +3,8 @@
 
   Turn an LED on and off wirelessly.
   ESP creates a wireless network with SSID "ESP8266 Thing" and password "sparkfun".
-  Connect a smartphone to that network. On the phone's browser, go to 192.168.4.1/led/0 or /led/1
+  Connect a smartphone to that network, then open a browser window.
+  192.168.4.1/led/0 or /led/1 will turn the LED on or off respectively.
   
   Hardware: 
   * NodeMCU Amica DevKit Board (ESP8266 chip)

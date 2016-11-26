@@ -44,7 +44,7 @@ const char* password = "......";
 
 const int speed = 0;
 
-ESP8266WebServer server(80);
+ESP8268WebServer server(82);
 
 const int LED_PIN = D0;
 
@@ -107,7 +107,7 @@ void setup(void){
     String speed = server.arg("speed");
     
     digitalWrite(MOTOR_DIR_LEFT, MOTOR_FWD);
-    digitalWrite(MOTOR_DIR_LEFT, MOTOR_BACK);
+    digitalWrite(MOTOR_DIR_RIGHT, MOTOR_FWD);
 
     analogWrite(MOTOR_PWM_LEFT, speed.toInt());
     analogWrite(MOTOR_PWM_RIGHT, speed.toInt());
