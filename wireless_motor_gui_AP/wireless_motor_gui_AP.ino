@@ -33,20 +33,11 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 
 String html_home;
 
-//String css_code;
-//String css_bootstrap;
-//String js_code;
-//String js_aREST;
-//String js_ajaxq;
-//String js_jquery;
-
 
 void setup() {
     WiFi.softAP(ssid, password);
 
     Serial.begin(115200);
-
-    Serial.println();
 
     setupServer();
 
@@ -65,21 +56,49 @@ void loop() {
 //
 
 int stop() {
-  //analogWrite(MOTOR_PWM_LEFT, 0);
-  //analogWrite(MOTOR_PWM_RIGHT, 0);
-  digitalWrite(LED_PIN, HIGH);
+  //digitalWrite(LED_PIN, HIGH);
   Serial.println("stop");
+  analogWrite(MOTOR_PWM_LEFT, 0);
+  analogWrite(MOTOR_PWM_RIGHT, 0);
 }
 
 int forward() {
-  digitalWrite(LED_PIN, LOW);
+  //digitalWrite(LED_PIN, LOW);
   Serial.println("forward");
-  //digitalWrite(MOTOR_DIR_LEFT, MOTOR_FWD);
-  //digitalWrite(MOTOR_DIR_RIGHT, MOTOR_FWD);
+  digitalWrite(MOTOR_DIR_LEFT, MOTOR_FWD);
+  digitalWrite(MOTOR_DIR_RIGHT, MOTOR_FWD);
 
-  //analogWrite(MOTOR_PWM_LEFT, 800);
-  //analogWrite(MOTOR_PWM_RIGHT, 800);
+  analogWrite(MOTOR_PWM_LEFT, 1000);
+  analogWrite(MOTOR_PWM_RIGHT, 1000);
 }
+
+int backward() {
+  Serial.println("backward");
+  digitalWrite(MOTOR_DIR_LEFT, MOTOR_BACK);
+  digitalWrite(MOTOR_DIR_RIGHT, MOTOR_BACK);
+
+  analogWrite(MOTOR_PWM_LEFT, 1000);
+  analogWrite(MOTOR_PWM_RIGHT, 1000);
+}
+
+int left() {
+  Serial.println("left");
+  digitalWrite(MOTOR_DIR_LEFT, MOTOR_BACK);
+  digitalWrite(MOTOR_DIR_RIGHT, MOTOR_FWD);
+
+  analogWrite(MOTOR_PWM_LEFT, 800);
+  analogWrite(MOTOR_PWM_RIGHT, 800);
+}
+
+int right() {
+  Serial.println("right");
+  digitalWrite(MOTOR_DIR_LEFT, MOTOR_FWD);
+  digitalWrite(MOTOR_DIR_RIGHT, MOTOR_BACK);
+
+  analogWrite(MOTOR_PWM_LEFT, 800);
+  analogWrite(MOTOR_PWM_RIGHT, 800);
+}
+
 
 
 //
@@ -116,7 +135,7 @@ void prepareFile() {
 
 void setupPins() {
     // setup LEDs and Motors
-    Serial.println("Setup LED pins");
+    Serial.println("Setup LED and motor pins");
     pinMode(LED_PIN, OUTPUT);    //Pin D0 is LED
     digitalWrite(LED_PIN, LOW); //Initial state is ON (LOW)
 
@@ -190,6 +209,15 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
             if (payload[0] == '#') {
                 if(payload[1] == 'F') {
                   forward();
+                }
+                else if(payload[1] == 'B') {
+                  backward();
+                }
+                else if(payload[1] == 'L') {
+                  left();
+                }
+                else if(payload[1] == 'R') {
+                  right();
                 }
                 else {
                   stop();

@@ -16,7 +16,7 @@
         font-family:Arial;
         font-size:20px;
         font-weight:bold;
-        padding:20px 40px;
+        padding:40px 40px;
         text-decoration:none;
       }
       .button:hover {
@@ -31,6 +31,15 @@
         outline:0;
       }
 
+      .center-col {
+        width: 50%;
+        margin: 0 40px; 
+      }
+
+      .row {
+        margin:10px 10px;
+      }
+
     </style>
 </head>
 
@@ -38,27 +47,41 @@
   <h1>Yay Robot Controls</h1>
 
   <div class='row'>
+  <div class="center-col">
 
-    <button id="forward" class="button">Forward</button>
+    <button id="forward" class="button">▲</button>
 
-  </div>
+  </div></div>
   <div class='row'>
 
-    <!--left and right-->
+    <button id="left" class="button"> ◄ </button>
+    <button id="right" class="button"> ► </button>
 
   </div>
+  
   <div class='row'>
+  <div class="center-col">
 
-    <button id="forward" class="button">Backward</button>
+    <button id="backward" class="button">▼</button>
 
+  </div>
   </div>
 
 
 
 
   <script>
-    document.getElementById("forward").onmousedown = function() {forwardDown()};
-    document.getElementById("forward").onmouseup = function() {forwardUp()};
+    document.getElementById("forward").ontouchstart = function() {forwardDown()};
+    document.getElementById("forward").ontouchend = function() {release()};
+
+    document.getElementById("backward").ontouchstart = function() {backwardDown()};
+    document.getElementById("backward").ontouchend = function() {release()};
+
+    document.getElementById("left").ontouchstart = function() {leftDown()};
+    document.getElementById("left").ontouchend = function() {release()};
+
+    document.getElementById("right").ontouchstart = function() {rightDown()};
+    document.getElementById("right").ontouchend = function() {release()};
 
 
     var connection = new WebSocket('ws://'+location.hostname+':81/', ['arduino']);
@@ -79,8 +102,22 @@
       connection.send('#F');
     }
 
-    function forwardUp() {
-      console.log('Forward button released'); 
+    function backwardDown() {
+      console.log('Backward button pressed'); 
+      connection.send('#B');
+    }
+
+    function leftDown() {
+      console.log('Left button pressed'); 
+      connection.send('#L');
+    }
+
+    function rightDown() {
+      console.log('Right button pressed'); 
+      connection.send('#R');
+    }
+    function release() {
+      console.log('Button released'); 
       connection.send('#0');
     }
 
