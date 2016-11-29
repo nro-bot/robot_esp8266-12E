@@ -32,7 +32,7 @@ ESP8266WebServer server = ESP8266WebServer(80);
 WebSocketsServer webSocket = WebSocketsServer(81);
 
 String html_home;
-
+String css_style;
 
 void setup() {
     WiFi.softAP(ssid, password);
@@ -127,6 +127,26 @@ void prepareFile() {
         //Serial.print(html_home);
     }
 
+    File css_file = SPIFFS.open("/style.css", "r");
+    if (!css_file) {
+        Serial.println("CSS file open failed");  
+    } 
+    else {
+        Serial.println("CSS file open success");
+
+        css_style = "";
+        while (css_file.available()) {
+            //Serial.write(file.read());
+            String line = css_file.readStringUntil('\n');
+            css_style += line + "\n";
+        }
+        css_file.close();
+
+        //Serial.print(html_home);
+    }
+
+
+
 }
 
 //
@@ -137,12 +157,15 @@ void setupPins() {
     // setup LEDs and Motors
     Serial.println("Setup LED and motor pins");
     pinMode(LED_PIN, OUTPUT);    //Pin D0 is LED
-    digitalWrite(LED_PIN, LOW); //Initial state is ON (LOW)
+    digitalWrite(LED_PIN, HIGH); //Initial state is HIGH (OFF)
 
     pinMode(MOTOR_PWM_LEFT, OUTPUT);
     pinMode(MOTOR_DIR_LEFT, OUTPUT);
     pinMode(MOTOR_PWM_RIGHT, OUTPUT);
     pinMode(MOTOR_DIR_RIGHT, OUTPUT);
+
+    digitalWrite(MOTOR_PWM_LEFT, HIGH); //Initial state is HIGH (OFF)
+    digitalWrite(MOTOR_PWM_RIGHT, HIGH); //Initial state is HIGH (OFF)
 
     // Set initial speed to 0
     analogWrite(MOTOR_PWM_LEFT, 0);
@@ -176,6 +199,11 @@ void setupServer() {
     server.on("/", []() {
         // send home.html
         server.send(200, "text/html", html_home);
+    });
+
+    server.on("/style.css", []() {
+        // send home.html
+        server.send(200, "text/css", css_style);
     });
 
     server.begin();

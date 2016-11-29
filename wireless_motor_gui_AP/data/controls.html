@@ -4,70 +4,30 @@
   <meta charset=utf-8 />
   <title>whooo control robots</title>
 
-    <style>
-      .button {
-        background-color:#ffaa42;
-        -moz-border-radius:13px;
-        -webkit-border-radius:13px;
-        border-radius:13px;
-        display:inline-block;
-        cursor:pointer;
-        color:#ffffff;
-        font-family:Arial;
-        font-size:20px;
-        font-weight:bold;
-        padding:40px 40px;
-        text-decoration:none;
-      }
-      .button:hover {
-        background-color:#ff8c00;
-      }
-      .button:active {
-        position:relative;
-        top:1px;
-      }
-
-      .button:focus {
-        outline:0;
-      }
-
-      .center-col {
-        width: 50%;
-        margin: 0 40px; 
-      }
-
-      .row {
-        margin:10px 10px;
-      }
-
-    </style>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
 </head>
 
 <body>
-  <h1>Yay Robot Controls</h1>
+  <h1>Yay Robots!</h1>
 
-  <div class='row'>
-  <div class="center-col">
-
-    <button id="forward" class="button">▲</button>
-
-  </div></div>
-  <div class='row'>
-
-    <button id="left" class="button"> ◄ </button>
-    <button id="right" class="button"> ► </button>
-
-  </div>
-  
-  <div class='row'>
-  <div class="center-col">
-
-    <button id="backward" class="button">▼</button>
-
-  </div>
-  </div>
-
-
+<table style="width:100%">
+  <tr>
+    <td></td>
+    <td><button id="forward" class="button">▲</button></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><button id="left" class="button">◀</button></td>
+    <td>❤</td>
+    <td><button id="right" class="button">▶</button></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><button id="backward" class="button">▼</button></td>
+    <td></td>
+  </tr>
+</table>
 
 
   <script>
@@ -82,6 +42,33 @@
 
     document.getElementById("right").ontouchstart = function() {rightDown()};
     document.getElementById("right").ontouchend = function() {release()};
+
+    document.onkeydown = function(e) {
+        e = e || window.event;
+        switch(e.which || e.keyCode) {
+        case 38:
+            forwardDown();
+            console.log("Up key");
+            break;
+        case 40:
+            backwardDown();
+            console.log("Down key");
+            break;
+        case 37:
+            leftDown();
+            console.log("Left key");
+            break;
+        case 39:
+            rightDown();
+            console.log("Right key");
+            break;
+      }
+    }
+
+    document.onkeyup = function(e) {
+        release();
+        console.log("Key up");
+    }
 
 
     var connection = new WebSocket('ws://'+location.hostname+':81/', ['arduino']);
