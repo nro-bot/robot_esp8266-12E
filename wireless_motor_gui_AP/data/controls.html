@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>whooo control robots</title>
+
+    <style>
+      .button {
+        background-color:#ffaa42;
+        -moz-border-radius:13px;
+        -webkit-border-radius:13px;
+        border-radius:13px;
+        display:inline-block;
+        cursor:pointer;
+        color:#ffffff;
+        font-family:Arial;
+        font-size:20px;
+        font-weight:bold;
+        padding:20px 40px;
+        text-decoration:none;
+      }
+      .button:hover {
+        background-color:#ff8c00;
+      }
+      .button:active {
+        position:relative;
+        top:1px;
+      }
+
+      .button:focus {
+        outline:0;
+      }
+
+    </style>
+</head>
+
+<body>
+  <h1>Yay Robot Controls</h1>
+
+  <div class='row'>
+
+    <button id="forward" class="button">Forward</button>
+
+  </div>
+  <div class='row'>
+
+    <!--left and right-->
+
+  </div>
+  <div class='row'>
+
+    <button id="forward" class="button">Backward</button>
+
+  </div>
+
+
+
+
+  <script>
+    document.getElementById("forward").onmousedown = function() {forwardDown()};
+    document.getElementById("forward").onmouseup = function() {forwardUp()};
+
+
+    var connection = new WebSocket('ws://'+location.hostname+':81/', ['arduino']);
+      connection.onopen = function(){
+      connection.send('Connect ' + new Date()); 
+    };
+    connection.onerror = function(error){
+      console.log('WebSocket Error ', error);
+    };
+    connection.onmessage = function(e){
+      console.log('Server: ', e.data);
+    };
+
+
+
+    function forwardDown() {
+      console.log('Forward button pressed'); 
+      connection.send('#F');
+    }
+
+    function forwardUp() {
+      console.log('Forward button released'); 
+      connection.send('#0');
+    }
+
+  </script>
+
+
+  </body>
+</html>
