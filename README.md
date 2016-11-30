@@ -1,10 +1,10 @@
 # robot_esp8266-12E
 
-[!Profile of robot](robot.jpg)
+![Profile of robot](robot.jpg)
 
-[!Side profile of robot](robot_sideprofile.jpg)
+![Side profile of robot](robot_sideprofile.jpg)
 
-[!HTML GUI screenshot](screenshot.jpg)
+![HTML GUI screenshot](screenshot.jpg)
 
 Current working demo in wireless_motor_gui_AP
 
