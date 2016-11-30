@@ -1,5 +1,43 @@
 /*
-  attempt AP control of robot
+  Wireless Motor Control, with ESP as Access Point
+
+  Usage: 
+    Connect phone or laptop to "ESP Whee" wireless network
+    Go to 192.168.4.1. 
+    A webpage with four buttons should appear. Click them to move the robot.
+
+  Installation: 
+    In Arduino, go to Tools > ESP8266 Sketch Data Upload to upload the files from ./data to the ESP
+    Then, in Arduino, compile and upload sketch to the ESP
+
+  Requirements:
+    Arduino support for ESP8266 board
+      In Arduino, add URL to Files > Preferences > Additional Board Managers URL.
+      See https://learn.sparkfun.com/tutorials/esp8266-thing-hookup-guide/installing-the-esp8266-arduino-addon
+
+    Websockets library
+      To install, Sketch > Include Library > Manage Libraries... > Websockets > Install
+      https://github.com/Links2004/arduinoWebSockets
+    
+    ESP8266FS tool
+      To install, create "tools" folder in Arduino, download, and unzip. See 
+      https://github.com/esp8266/Arduino/blob/master/doc/filesystem.md#uploading-files-to-file-system
+
+
+  Note that one of the motor pins overlaps with LED pin D4, so when the left wheel is going CW, the LED light close the ESP chip will turn on
+  Note that we opted to swap the motor wires on the right motor so that LOW is backwards for both motors
+  
+  We define arbitrarily Left CW = backwards
+  
+  Hardware: 
+  * NodeMCU Amica DevKit Board (ESP8266 chip)
+  * Motorshield for NodeMCU 
+  * 2 motors + 2 wheels + motor chassis with caster
+  * Left motor connected to D3 (BLK/A- and RED/A+ on the shield)
+  * Right motor connected to D4, with wires swapped (RED/B- and BLK/B+ on the shield)
+
+  modified Nov 2016
+  Nancy Ouyang
 */
 
 #include <Arduino.h>
