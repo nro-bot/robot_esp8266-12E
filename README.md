@@ -4,7 +4,7 @@
 
 ![Side profile of robot](robot_sideprofile.jpg)
 
-![HTML GUI screenshot](screenshot.jpg)
+![HTML GUI screenshot](screenshot.png)
 
 Current working demo in wireless_motor_gui_AP
 
