@@ -1,5 +1,5 @@
 /*
-  Wireless Motor Control, with ESP as Access Point
+  Wireless Servo Control, with ESP as Access Point
 
   Usage: 
     Connect phone or laptop to "ESP Whee" wireless network
@@ -32,9 +32,8 @@
   Hardware: 
   * NodeMCU Amica DevKit Board (ESP8266 chip)
   * Motorshield for NodeMCU 
-  * 2 motors + 2 wheels + motor chassis with caster
-  * Left motor connected to D3 (BLK/A- and RED/A+ on the shield)
-  * Right motor connected to D4, with wires swapped (RED/B- and BLK/B+ on the shield)
+  * 2 servos
+  * Paper chassis
 
   modified Nov 2016
   Nancy Ouyang
@@ -50,20 +49,18 @@
 #include <ESP8266mDNS.h>
 #include <FS.h>
 
+#include <Servo.h>
+
 const int LED_PIN = D0;
 
-const int MOTOR_PWM_LEFT = D1;
-const int MOTOR_PWM_RIGHT = D2;
-
-const int MOTOR_DIR_LEFT = D3;
-const int MOTOR_DIR_RIGHT = D4;
-
-#define MOTOR_BACK LOW
-#define MOTOR_FWD HIGH
+const int SERVO_LEFT = D1;
+const int SERVO_RIGHT = D2;
+Servo servo_left;
+Servo servo_right;
 
 
 // WiFi parameters
-const char* ssid = "ESP Whee";
+const char* ssid = "ESP Whee2";
 const char* password = "my_password";
 
 ESP8266WebServer server = ESP8266WebServer(80);
@@ -96,45 +93,33 @@ void loop() {
 int stop() {
   //digitalWrite(LED_PIN, HIGH);
   Serial.println("stop");
-  analogWrite(MOTOR_PWM_LEFT, 512);
-  analogWrite(MOTOR_PWM_RIGHT, 512);
+  servo_left.write(90);
+  servo_right.write(90);
 }
 
 int forward() {
   //digitalWrite(LED_PIN, LOW);
   Serial.println("forward");
-  digitalWrite(MOTOR_DIR_LEFT, MOTOR_FWD);
-  digitalWrite(MOTOR_DIR_RIGHT, MOTOR_FWD);
-
-  analogWrite(MOTOR_PWM_LEFT, 1023);
-  analogWrite(MOTOR_PWM_RIGHT, 1023);
+  servo_left.write(0);
+  servo_right.write(180);
 }
 
 int backward() {
   Serial.println("backward");
-  digitalWrite(MOTOR_DIR_LEFT, MOTOR_BACK);
-  digitalWrite(MOTOR_DIR_RIGHT, MOTOR_BACK);
-
-  analogWrite(MOTOR_PWM_LEFT, 0);
-  analogWrite(MOTOR_PWM_RIGHT, 0);
+  servo_left.write(180);
+  servo_right.write(0);
 }
 
 int left() {
   Serial.println("left");
-  digitalWrite(MOTOR_DIR_LEFT, MOTOR_BACK);
-  digitalWrite(MOTOR_DIR_RIGHT, MOTOR_FWD);
-
-  analogWrite(MOTOR_PWM_LEFT, 0);
-  analogWrite(MOTOR_PWM_RIGHT, 1023);
+  servo_left.write(180);
+  servo_right.write(180);
 }
 
 int right() {
   Serial.println("right");
-  digitalWrite(MOTOR_DIR_LEFT, MOTOR_FWD);
-  digitalWrite(MOTOR_DIR_RIGHT, MOTOR_BACK);
-
-  analogWrite(MOTOR_PWM_LEFT, 1023);
-  analogWrite(MOTOR_PWM_RIGHT, 0);
+  servo_left.write(0);
+  servo_right.write(0);
 }
 
 
@@ -197,17 +182,8 @@ void setupPins() {
     pinMode(LED_PIN, OUTPUT);    //Pin D0 is LED
     digitalWrite(LED_PIN, HIGH); //Initial state is HIGH (OFF)
 
-    pinMode(MOTOR_PWM_LEFT, OUTPUT);
-    pinMode(MOTOR_DIR_LEFT, OUTPUT);
-    pinMode(MOTOR_PWM_RIGHT, OUTPUT);
-    pinMode(MOTOR_DIR_RIGHT, OUTPUT);
-
-    digitalWrite(MOTOR_PWM_LEFT, HIGH); //Initial state is HIGH (OFF)
-    digitalWrite(MOTOR_PWM_RIGHT, HIGH); //Initial state is HIGH (OFF)
-
-    // Set initial speed to 0
-    analogWrite(MOTOR_PWM_LEFT, 0);
-    analogWrite(MOTOR_PWM_RIGHT, 0);
+    servo_left.attach(SERVO_LEFT);
+    servo_right.attach(SERVO_RIGHT);
 }
 
 void setupServer() {
