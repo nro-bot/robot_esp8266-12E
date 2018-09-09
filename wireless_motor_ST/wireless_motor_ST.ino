@@ -44,7 +44,7 @@ const char* password = "......";
 
 const int speed = 0;
 
-ESP8268WebServer server(82);
+ESP8266WebServer server(82);
 
 const int LED_PIN = D0;
 
